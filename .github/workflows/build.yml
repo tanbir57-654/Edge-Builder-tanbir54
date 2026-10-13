@@ -8,12 +8,19 @@ jobs:
       - uses: actions/checkout@v5
         with:
           submodules: recursive
+          fetch-depth: 0
       - uses: actions/setup-java@v5
         with:
           java-version: '17'
           distribution: temurin
       - run: chmod +x gradlew
-      - run: ./gradlew :core:app:assembleDebug
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ hashFiles('**/*.gradle*') }}
+      - run: ./gradlew :core:app:assembleDebug --stacktrace
       - uses: actions/upload-artifact@v4
         with:
           name: Mdtanbirakon-APK
